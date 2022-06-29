@@ -18,17 +18,17 @@ int pl_resetn_1(){
 	int fd;
 	char attr[32];
 
-	DIR *dir = opendir("/sys/class/gpio/gpio510");
+	DIR *dir = opendir("/sys/class/gpio/gpio506");
 	if (!dir) {
 		fd = open("/sys/class/gpio/export", O_WRONLY);
 		if (fd < 0) {
 			perror("open(/sys/class/gpio/export)");
 			return -1;
 		}
-		strcpy(attr, "510");
+		strcpy(attr, "506");
 		write(fd, attr, strlen(attr));
 		close(fd);
-		dir = opendir("/sys/class/gpio/gpio510");
+		dir = opendir("/sys/class/gpio/gpio506");
 		if (!dir) {
 			return -1;
 		}
@@ -37,16 +37,16 @@ int pl_resetn_1(){
 
 	fd = open("/sys/class/gpio/gpio510/direction", O_WRONLY);
 	if (fd < 0) {
-		perror("open(/sys/class/gpio/gpio510/direction)");
+		perror("open(/sys/class/gpio/gpio506/direction)");
 		return -1;
 	}
 	strcpy(attr, "out");
 	write(fd, attr, strlen(attr));
 	close(fd);
 
-	fd = open("/sys/class/gpio/gpio510/value", O_WRONLY);
+	fd = open("/sys/class/gpio/gpio506/value", O_WRONLY);
 	if (fd < 0) {
-		perror("open(/sys/class/gpio/gpio510/value)");
+		perror("open(/sys/class/gpio/gpio506/value)");
 		return -1;
 	}
 	sprintf(attr, "%d", 0);
@@ -72,9 +72,9 @@ float uint_as_float(unsigned int i){
 
 // This program is DMEM[0]+DMEM[1]=DMEM[2]
 int main(){
-    int uio0_fd = open("/dev/uio0", O_RDWR | O_SYNC);
+    int uio0_fd = open("/dev/uio4", O_RDWR | O_SYNC);
     unsigned int* DMEM_BASE = (unsigned int*) mmap(NULL, 0x2000, PROT_READ|PROT_WRITE, MAP_SHARED, uio0_fd, 0);
-    int uio1_fd = open("/dev/uio1", O_RDWR | O_SYNC);
+    int uio1_fd = open("/dev/uio5", O_RDWR | O_SYNC);
     unsigned int* IMEM_BASE = (unsigned int*) mmap(NULL, 0x1000, PROT_READ|PROT_WRITE, MAP_SHARED, uio1_fd, 0);
     if (uio0_fd < 0 || uio1_fd  < 0) {
         printf("Device Open Error");

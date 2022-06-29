@@ -118,7 +118,7 @@ This allows Linux systems to recognize the AXI BRAM controller as a UIO device.
 # Run RISC-V from petalinux
 
 Insert SD card, set power supply and connect USB-LAN adapter, and turn on the board power.  
-Login username is `root`, password is `root`.  
+Login username is `petalinux` (for petalinux 2022 or older).  
 From USB UART serial console, check IP address by `ipconfig`, and connect to the board via ssh.  
 
 ## Copy test files to the board
@@ -130,7 +130,8 @@ scp -r test_riscv root@192.168.xx.xx
 
 ## Check UIO device
 Check which UIO device is recognized for each IP set in the device tree.  
-We confirmed that `IMEM_CONTROL` is recognized as `/dev/uio1`, `DMEM_CONTROL` is recognized as `/dev/uio0`.  
+We confirmed that `IMEM_CONTROL` is recognized as `/dev/uio1`, `DMEM_CONTROL` is recognized as `/dev/uio0`.
+This may not always be the case. Check all uios to confirm.  
 ```sh
 ssh root@192.168.xx.xx
 root@riscv_base_prj:~$ cat /sys/class/uio/uio0/maps/map0/name
@@ -139,7 +140,9 @@ root@riscv_base_prj:~$ cat /sys/class/uio/uio1/maps/map0/name
 axi_bram_ctrl@a0000000
 ```
 ## Run RISC-V test
-The tests are exactly the same as those performed in stand-alone mode in Vitis.  
+The tests are exactly the same as those performed in stand-alone mode in Vitis.
+Confirm which gpio the pl reset was mapped to. If there's only on reset, the port should be the last gpio. 
+If 2 resets were instantiated, it should be the one before that.   
 ```sh
 ssh root@192.168.xx.xx
 cd test_riscv
